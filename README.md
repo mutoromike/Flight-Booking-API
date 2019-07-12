@@ -1,2 +1,2 @@
-# Flight-Booking_API
+# Flight-Booking-API
 A Flight Booking API
