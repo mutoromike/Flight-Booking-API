@@ -27,7 +27,7 @@ Flask (Python)
  - Create a virtual environment and run the command: `pip install -r requirements.txt` (install packages)
 
 ### Start the application
- - The run the following to start the app:
+ - Run the following to start the app:
 `python manage.py run`
  - Navigate to postman to test the api endpoints
 
@@ -35,7 +35,6 @@ Flask (Python)
 To run tests and ensure the application works:
 
  - Navigate to tests folder on cmd or terminal
-tests
  - Run the command `python manage.py test`
 
 ### Using the application
