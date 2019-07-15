@@ -1,4 +1,7 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/4dc0116c2a1349b6893a48334030dc51)](https://app.codacy.com/app/mutoromike/Flight-Booking-API?utm_source=github.com&utm_medium=referral&utm_content=mutoromike/Flight-Booking-API&utm_campaign=Badge_Grade_Dashboard)
+
 # Flight-Booking-API
+
 This is an API that powers a FLIGHT BOOKING APPLICATION. It allows clients to book tickets and track their flight details. The system also reminds the clients about their flights with a 24 hour notice. 
 
 ## The applicaton enables the user to:
@@ -42,3 +45,5 @@ Flask (Python)
     - Register to create an account
     - Login using username and password created
     - After signing in you can proceed to book a upload a passport photo, then you can book and track flights
+
+
