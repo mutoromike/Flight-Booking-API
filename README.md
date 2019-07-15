@@ -12,7 +12,6 @@ This is an API that powers a FLIGHT BOOKING APPLICATION. It allows clients to bo
  - Check the status of their flight
  - Remind clients about their flights (24 hr notice)
 
-
 ## Tech/Framework used
 
 The application has been built by:
