@@ -6,12 +6,11 @@ from flask_bcrypt import Bcrypt
 from flask import make_response, request, jsonify
 
 from app.models.models import User, BlacklistToken
-from app.flights.views import authorize
-from app.helpers import register_details
+from app.helpers.auth import authorize, register_details
 import re
 
 
-@auth.route('/api/v2/auth/register', methods=['POST'])
+@auth.route('/api/v1/auth/register', methods=['POST'])
 def register():
     """Method to handle user registration"""
     # Query to see if the user already exists
@@ -47,7 +46,7 @@ def register():
         return make_response(jsonify(response)), 401
     return make_response(jsonify(response)), 201
     
-@auth.route('/api/v2/auth/login', methods=['POST'])
+@auth.route('/api/v1/auth/login', methods=['POST'])
 def login():
     """Handle POST request for this view. Url ---> /auth/login"""
     try:
@@ -76,7 +75,7 @@ def login():
         # Return a server error using the HTTP Error Code 500 (Internal Server Error)
         return make_response(jsonify(response)), 500
 
-@auth.route('/api/v2/auth/reset-password', methods=['PUT'])
+@auth.route('/api/v1/auth/reset-password', methods=['PUT'])
 @authorize
 def reset_pass(current_user, user_id):
     """Handle PUT request for this view. Url ---> /api/v2/auth/reset-password"""                    
@@ -106,7 +105,7 @@ def reset_pass(current_user, user_id):
         return make_response(jsonify(response)), 500
     return make_response(jsonify(response)), 200
 
-@auth.route('/api/v2/auth/logout', methods=['POST'])
+@auth.route('/api/v1/auth/logout', methods=['POST'])
 @authorize
 def logout(current_user, user_id):
     access_token = request.headers.get('Authorization')
