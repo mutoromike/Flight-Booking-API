@@ -7,7 +7,6 @@ from flask import make_response, request, jsonify
 
 from app.models.models import User, BlacklistToken
 from app.helpers.auth import authorize, register_details
-import re
 
 
 @auth.route('/api/v1/auth/register', methods=['POST'])
@@ -39,13 +38,13 @@ def register():
         user = User(username=username, email=email, password=password)
         user.save()
         response = {'message': 'You registered successfully. Please log in.'}
-        # return a response notifying the user that they registered successfully            
+        # return a response notifying the user that they registered successfully      
     except Exception as e:
         # An error occured, therefore return a string message containing the error
         response = {'message': str(e)}
         return make_response(jsonify(response)), 401
     return make_response(jsonify(response)), 201
-    
+
 @auth.route('/api/v1/auth/login', methods=['POST'])
 def login():
     """Handle POST request for this view. Url ---> /auth/login"""
@@ -78,7 +77,7 @@ def login():
 @auth.route('/api/v1/auth/reset-password', methods=['PUT'])
 @authorize
 def reset_pass(current_user, user_id):
-    """Handle PUT request for this view. Url ---> /api/v2/auth/reset-password"""                    
+    """Handle PUT request for this view. Url ---> /api/v2/auth/reset-password"""               
     user = User.query.filter_by(id=user_id).first()
     req = request.get_json()
     npass = req['npassword']
@@ -88,7 +87,7 @@ def reset_pass(current_user, user_id):
     if user.id!=user_id:
          # Users can only edit their passwords
         response = {'message': 'You can only edit your own password'}
-        return make_response(jsonify(response)), 401 
+        return make_response(jsonify(response)), 401
     if npass!=cpass:
         # Passwords aren't matching. Therefore, we return an error message
         response = {'message': 'Enter matching passwords'}
@@ -111,7 +110,7 @@ def logout(current_user, user_id):
     access_token = request.headers.get('Authorization')
     if user_id != User.decode_token(access_token):
         response = {'message': 'An error occured.'}
-        return make_response(jsonify(response)), 403            
+        return make_response(jsonify(response)), 403       
     try:
         # insert the token
         blacklist_token = BlacklistToken(token=access_token)

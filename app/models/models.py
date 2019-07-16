@@ -1,4 +1,4 @@
-""" app/models.py 
+""" app/models.py
     file to handle creation of models
 """
 
@@ -13,7 +13,7 @@ reserve = db.Table('reserve',
     db.Column('flight_id', db.Integer, db.ForeignKey('flights.id'))
     )
 
-class User(db.Model): 
+class User(db.Model):
 
     """
     Class defining user table

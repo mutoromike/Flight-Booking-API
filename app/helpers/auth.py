@@ -23,7 +23,7 @@ def authorize(f):
             except KeyError:
                 response = {"message": "One or more event attributes are missing!"}
                 return make_response(jsonify(response)), 500
-        
+
         msg = {'message': 'Invalid token or Token has expired! PLEASE LOGIN!'}
         return make_response(jsonify(msg)), 401
     return check
@@ -35,7 +35,7 @@ def register_details(data):
         to validate user inputs
     """
     if not re.match("^[a-zA-Z0-9_]*$", data['username']):
-        # Check username special characters        
+        # Check username special characters  
         return 'Username cannot have special characters!'
     if len(data['username'].strip())<5:
         # Checkusername length
