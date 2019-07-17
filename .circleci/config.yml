@@ -1,26 +1,32 @@
+# Python CircleCI 2.0 configuration file
+
 version: 2
 jobs:
   build:
     docker:
       # version
       - image: circleci/python:3.6.1
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
+        environment: # environment variables for primary container
+          DATABASE_URL: postgresql://root@localhost/flight_api?sslmode=disable
+          FLASK_APP: manage.py
+          APP_SETTINGS: testing
+      
       - image: circleci/postgres:9.4
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: flight_api
 
     working_directory: ~/Flight-Booking-API
 
     steps:
       - checkout
-
+      - run: mkdir test-reports
       # Download and cache dependencies
       - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "requirements.txt" }}
+          keys: 
+            - deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
             # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
+            - deps1-
 
       - run:
           name: install dependencies
@@ -32,7 +38,7 @@ jobs:
       - save_cache:
           paths:
             - ./env
-          key: v1-dependencies-{{ checksum "requirements.txt" }}
+          key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
 
       # run tests
       - run:
@@ -44,3 +50,5 @@ jobs:
       - store_artifacts:
           path: test-reports
           destination: test-reports
+      - store_test_results:
+          path: test-reports/
