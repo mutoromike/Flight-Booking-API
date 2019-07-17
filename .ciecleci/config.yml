@@ -4,11 +4,13 @@ jobs:
     docker:
       # version
       - image: circleci/python:3.6.1
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
+        environment: # environment variables for primary container
+          DATABASE_URL: postgresql://root@localhost/circle_test?sslmode=disable
+      
       - image: circleci/postgres:9.4
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: flight_api
 
     working_directory: ~/Flight-Booking-API
 
