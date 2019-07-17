@@ -104,6 +104,13 @@ class LogoutUser(MethodView):
             if not isinstance(value, str):
                 try:
                     # mark token as blacklisted
+                    token = BlacklistToken.query.filter_by(token=access_token).first()
+                    if token:
+                        response = {
+                            'message': 'You have been logged out already!'
+                        }
+                        return make_response(jsonify(response)), 401
+                        
                     blacklist_token = BlacklistToken(token=access_token)
                     blacklist_token.save()
                     response = {
