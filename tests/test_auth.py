@@ -193,7 +193,9 @@ class AuthTestCase(TestCase):
         """register and login a user to get an access token"""
         self.register_user(self.user_data)
         result = self.login_user(self.login_data)
-        access_token = json.loads(result.data.decode())['access_token']
+        data = json.loads(result.data.decode())
+        print("the data is", data)
+        access_token = data.get('access_token')
         return access_token
 
     def test_successful_logout(self):
