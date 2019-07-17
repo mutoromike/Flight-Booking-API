@@ -5,7 +5,7 @@ jobs:
       # version
       - image: circleci/python:3.6.1
         environment: # environment variables for primary container
-          DATABASE_URL: postgresql://root@localhost/circle_test?sslmode=disable
+          DATABASE_URL: postgresql://root@localhost/flight_api?sslmode=disable
       
       - image: circleci/postgres:9.4
         environment:
