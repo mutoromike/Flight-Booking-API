@@ -110,7 +110,7 @@ class LogoutUser(MethodView):
                             'message': 'You have been logged out already!'
                         }
                         return make_response(jsonify(response)), 401
-                        
+
                     blacklist_token = BlacklistToken(token=access_token)
                     blacklist_token.save()
                     response = {

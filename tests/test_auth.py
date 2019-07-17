@@ -164,7 +164,10 @@ class AuthTestCase(TestCase):
         login_res = self.login_user(self.login_data)
 
         # get the results in json format
-        result = json.loads(login_res.data)
+        result = json.loads(login_res.data.decode())
+        # Test that the response contains success message
+        self.assertEqual(result['message'], "You logged in successfully.")
+        # Assert that the status code is equal to 200
         self.assertEqual(login_res.status_code, 200)
         self.assertTrue(result['access_token'])
 
@@ -189,8 +192,8 @@ class AuthTestCase(TestCase):
         """register and login a user to get an access token"""
         self.register_user(self.user_data)
         result = self.login_user(self.login_data)
-        data = json.loads(result.data)
-        access_token = data.get('access_token')
+        data = json.loads(result.data.decode())
+        access_token = data['access_token']
         return access_token
 
     def test_successful_logout(self):
@@ -202,4 +205,17 @@ class AuthTestCase(TestCase):
         content_type='application/json')
         self.assertEqual(res.status_code, 200)
         result = json.loads(res.data.decode())
-        self.assertTrue(result['message'])
+        self.assertIn('Successfully logged out.', result['message'])
+
+    def test_repeat_logout(self):
+        """Test if a user is prevented to logout twice"""
+        # Get token
+        access_token = self.get_token()        
+        # Logout user
+        self.client().post('/api/v1/auth/logout', headers=dict(Authorization=access_token),
+        content_type='application/json')
+        res = self.client().post('/api/v1/auth/logout', headers=dict(Authorization=access_token),
+        content_type='application/json')     
+        self.assertEqual(res.status_code, 401)
+        result = json.loads(res.data.decode())
+        self.assertIn('You have been logged out already!', result['message'])
