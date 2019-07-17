@@ -15,9 +15,9 @@ def create_app(config_name):
 	db.init_app(app)
 	cors = CORS(app)
 
-	from .auth import auth
+	from .auth import authenticate
 	# from .events import events
-	app.register_blueprint(auth)
+	app.register_blueprint(authenticate)
 	# app.register_blueprint(events)
 
 	return app
