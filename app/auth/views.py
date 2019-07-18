@@ -4,7 +4,7 @@ from . import authenticate
 
 from flask_bcrypt import Bcrypt
 from flask.views import MethodView
-from flask import make_response, request, jsonify
+from flask import make_response, request, jsonify, g
 
 from app.models.models import User, BlacklistToken
 from app.helpers.auth import authorize, register_details
@@ -70,6 +70,8 @@ class LoginUser(MethodView):
                 # Generate the access token. This will be used as the authorization header
                 access_token = user.generate_token(user.id)
                 if access_token:
+                    g.current_user = user
+                    print("the current user is", user.id)
                     response = {
                         'message': 'You logged in successfully.',
                         'access_token': access_token.decode()

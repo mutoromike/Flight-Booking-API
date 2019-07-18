@@ -26,6 +26,7 @@ class User(db.Model):
     password = db.Column(db.String(256))
     flights = db.relationship('Flights', order_by='Flights.id', cascade="all, delete-orphan")
     client = db.relationship('Flights', secondary='reserve', backref=db.backref('reserve', lazy='dynamic'))
+    is_admin = db.Column(db.Boolean, unique=False, default=False)
 
     def __init__(self, username, email, password):
         """

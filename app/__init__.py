@@ -16,8 +16,8 @@ def create_app(config_name):
 	cors = CORS(app)
 
 	from .auth import authenticate
-	# from .events import events
+	from .flights import flight_blueprint
 	app.register_blueprint(authenticate)
-	# app.register_blueprint(events)
+	app.register_blueprint(flight_blueprint)
 
 	return app

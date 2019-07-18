@@ -1,5 +1,6 @@
 import re
 from functools import wraps
+from flask import Flask, request, jsonify, make_response
 from app.models.models import User, BlacklistToken
 
 def authorize(f):
@@ -21,7 +22,7 @@ def authorize(f):
                 current_user = User.query.filter_by(id=user_id).first()
                 return f(current_user, user_id, *args, **kwargs)
             except KeyError:
-                response = {"message": "One or more event attributes are missing!"}
+                response = {"message": "One or more flight attributes are missing!"}
                 return make_response(jsonify(response)), 500
 
         msg = {'message': 'Invalid token or Token has expired! PLEASE LOGIN!'}
@@ -55,3 +56,18 @@ def register_details(data):
             'have one number and special character'
     else:
         return data
+
+def check_user_role(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        access_token = request.headers.get('Authorization')
+        user_id = User.decode_token(access_token)
+        user = User.query.filter_by(id=user_id).first()
+        if user.is_admin is True:
+            pass
+        else:
+            response = { "message": "You're unauthorized" \
+                            " to perform this operation" }
+            return make_response(jsonify(response)), 401
+        return f(*args, **kwargs)
+    return decorated
