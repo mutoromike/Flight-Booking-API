@@ -3,41 +3,11 @@
 from unittest import TestCase
 import json
 from app import db, create_app
+from tests.base import BaseTestCase
 
-class AuthTestCase(TestCase):
+class AuthTestCase(BaseTestCase):
     """Test case for the authentication blueprint."""
 
-    def setUp(self):
-        """Set up test variables."""
-        self.app = create_app(config_name="testing")
-        # self.app_context = self.app.app_context()
-        # self.app_context.push()
-        # initialize the test client
-        self.client = self.app.test_client
-        # This is the user test json data with a predefined email and password
-        self.user_data = {
-            'username':'chrisevans',
-            'email': 'test@example.com',
-            'password': 'J@yd33n',
-            'cpassword': 'J@yd33n'
-        }
-        self.login_data = {
-            'email': 'test@example.com',
-            'password': 'J@yd33n'
-        }
-
-        with self.app.app_context():
-            # create all tables
-            db.session.close()
-            db.drop_all()
-            db.create_all()
-
-    def register_user(self, data):
-        return self.client().post('api/v1/auth/register', data=json.dumps(data), content_type='application/json' )
-
-    def login_user(self, data):
-        return self.client().post('/api/v1/auth/login', data=json.dumps(data), content_type='application/json' )
-        
     def test_registration(self):
         """Test user registration works correcty."""
         res = self.register_user(self.user_data)
@@ -187,14 +157,6 @@ class AuthTestCase(TestCase):
         self.assertEqual(res.status_code, 401)
         self.assertEqual(
             result['message'], "Invalid email or password, Please try again")
-
-    def get_token(self):
-        """register and login a user to get an access token"""
-        self.register_user(self.user_data)
-        result = self.login_user(self.login_data)
-        data = json.loads(result.data.decode())
-        access_token = data['access_token']
-        return access_token
 
     def test_successful_logout(self):
         """Test if a user can successfully logout"""

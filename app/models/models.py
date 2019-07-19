@@ -28,13 +28,14 @@ class User(db.Model):
     client = db.relationship('Flights', secondary='reserve', backref=db.backref('reserve', lazy='dynamic'))
     is_admin = db.Column(db.Boolean, unique=False, default=False)
 
-    def __init__(self, username, email, password):
+    def __init__(self, username, email, password, is_admin):
         """
         Initialization of user credentials
         """
 
         self.username = username
         self.email = email
+        self.is_admin = is_admin
         self.password = Bcrypt().generate_password_hash(password).decode()
 
     def password_is_valid(self, password):
