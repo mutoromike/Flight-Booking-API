@@ -28,12 +28,12 @@ def test():
 def createadmin():
     """Runs the command to create an admin user"""
     admin_user = User(
-        username=os.getenv('ADMIN_USERNAME'), 
+        username=os.getenv('ADMIN_USERNAME'),
         email=os.getenv('ADMIN_EMAIL'),
         password=os.getenv('ADMIN_PASSWORD'),
         is_admin=True
     )
-    admin_user.save()  
+    admin_user.save()
 
 if __name__ == '__main__':
     manager.run()

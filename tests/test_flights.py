@@ -2,12 +2,9 @@
 File to handle testing of the created models
 """
 
-import unittest
-from flask import jsonify
 import json
 
 from tests.base import BaseTestCase
-from app import create_app, db
 
 class EventsTestCase(BaseTestCase):
     """
@@ -17,9 +14,9 @@ class EventsTestCase(BaseTestCase):
 
     def test_flight_creation(self):
         """
-        Test if API can create a flight (POST request)    
+        Test if API can create a flight (POST request) 
         """
-        access_token = self.get_admin_token()  
+        access_token = self.get_admin_token() 
 
         result = self.client().post('/api/v1/flights', headers=dict(Authorization=access_token),
         data=json.dumps(self.flight), content_type='application/json' )
@@ -60,7 +57,7 @@ class EventsTestCase(BaseTestCase):
         # create a flight by making a POST request
         self.client().post(
             '/api/v1/flights',
-            headers=dict(Authorization= access_token), 
+            headers=dict(Authorization= access_token),
             data=json.dumps(self.flight), content_type='application/json')
         # get all the flights
         res = self.client().get(

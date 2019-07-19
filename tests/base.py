@@ -50,7 +50,7 @@ class BaseTestCase(TestCase):
 
     def login_user(self, data):
         return self.client().post('/api/v1/auth/login', data=json.dumps(data), content_type='application/json' )
-      
+
     def get_token(self):
         """register and login a user to get an access token"""
         self.register_user(self.user_data)
