@@ -42,7 +42,8 @@ class RegisterUser(MethodView):
             user = User(
                     username=username,
                     email=email,
-                    password=password)
+                    password=password,
+                    is_admin=False)
             user.save()
             response = {'message': 'You registered successfully. Please log in.'}
             # return a response notifying the user that they registered successfully      

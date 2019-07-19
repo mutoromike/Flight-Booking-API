@@ -132,8 +132,27 @@ class AdminFlightView(MethodView):
         response = {"message": "You can only modify the flights you created"}
         return jsonify(response), 401
 
+
+class GetFlights(MethodView):
+    """
+        Method to get all flights in the system
+    """
+
+    def get(self):
+        flights = Flights.query.all()
+        results = []
+        for flight in flights:
+            obj = {
+                'id': flight.id, 'name' : flight.name, 'origin' : flight.origin,
+                'destination' : flight.destination, 'date' : flight.date, 'time' : flight.time
+            }
+            results.append(obj)
+        return make_response(jsonify(results)), 200
+            
 flights_view = FlightsView.as_view('flights')
 update_flight_view = AdminFlightView.as_view('update_flight')
+all_flights_view = GetFlights.as_view('all_flights')
 
 flight_blueprint.add_url_rule('/api/v1/flights', view_func=flights_view)
 flight_blueprint.add_url_rule('/api/v1/flight/<int:flight_id>', view_func=update_flight_view)
+flight_blueprint.add_url_rule('/api/v1/flights/all', view_func=all_flights_view)
