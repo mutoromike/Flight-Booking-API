@@ -17,7 +17,9 @@ def create_app(config_name):
 
 	from .auth import authenticate
 	from .flights import flight_blueprint
+	from .images import image_blueprint
 	app.register_blueprint(authenticate)
 	app.register_blueprint(flight_blueprint)
+	app.register_blueprint(image_blueprint)
 
 	return app
