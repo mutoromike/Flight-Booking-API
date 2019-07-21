@@ -38,6 +38,9 @@ class BaseTestCase(TestCase):
             'time': '5 PM'
         }
 
+        self.passport = {
+            "image_url": "https://res.cloudinary.com/dd1qfqfag/image/upload/v1563726429/test_user_ic2fdy.jpg"
+        }
         with self.app.app_context():
             # create all tables
             db.session.close()

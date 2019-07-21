@@ -12,7 +12,7 @@ from app.helpers.auth import authorize, register_details
 
 class RegisterUser(MethodView):
     """
-    This class handles user registration
+        This class handles user registration
     """
 
     def post(self):
@@ -56,7 +56,7 @@ class RegisterUser(MethodView):
 
 class LoginUser(MethodView):
     """
-    This class handles user login
+        This class handles user login
     """
 
     def post(self):
@@ -92,7 +92,7 @@ class LoginUser(MethodView):
 
 class LogoutUser(MethodView):
     """
-    This class handles user LOGOUT
+        This class handles user LOGOUT
     """
 
     def post(self):
@@ -142,20 +142,6 @@ login_view = LoginUser.as_view('login')
 logout_view = LogoutUser.as_view('logout')
 
 
-authenticate.add_url_rule(
-    '/api/v1/auth/register',
-    view_func=registration_view,
-    methods=['POST']
-)
-
-authenticate.add_url_rule(
-    '/api/v1/auth/login',
-    view_func=login_view,
-    methods=['POST']
-)
-
-authenticate.add_url_rule(
-    '/api/v1/auth/logout',
-    view_func=logout_view,
-    methods=['POST']
-)
+authenticate.add_url_rule('/api/v1/auth/register', view_func=registration_view)
+authenticate.add_url_rule('/api/v1/auth/login', view_func=login_view)
+authenticate.add_url_rule('/api/v1/auth/logout', view_func=logout_view)

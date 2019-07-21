@@ -26,6 +26,7 @@ class User(db.Model):
     password = db.Column(db.String(256))
     flights = db.relationship('Flights', order_by='Flights.id', cascade="all, delete-orphan")
     client = db.relationship('Flights', secondary='reserve', backref=db.backref('reserve', lazy='dynamic'))
+    images = db.relationship('Images', order_by='Images.id', cascade="all, delete-orphan")
     is_admin = db.Column(db.Boolean, unique=False, default=False)
 
     def __init__(self, username, email, password, is_admin):
@@ -127,22 +128,22 @@ class Flights(db.Model):
     @staticmethod
     def get_all(user_id):
         """
-        This method gets all the events for a given user
+        This method gets all the flights for a given user
         """
         return Events.query.filter_by(created_by=user_id)
 
     def delete(self):
         """
-        Deletes a given event
+        Deletes a given flight
         """
         db.session.delete(self)
         db.session.commit()
 
     def __repr__(self):
         """
-        Return a representation of an event instance
+        Return a representation of a flight instance
         """
-        return "<Events: {}>".format(self.name)
+        return "<Flights: {}>".format(self.name)
 
 
 class BlacklistToken(db.Model):
@@ -164,3 +165,32 @@ class BlacklistToken(db.Model):
 
     def __repr__(self):
         return '<id: token: {}'.format(self.token)
+
+
+class Images(db.Model):
+    """
+    Model to handle image urls
+    """
+    __tablename__ = 'images'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    image_url = db.Column(db.String(500))
+    user = db.Column(db.Integer, db.ForeignKey(User.id))
+    
+    def save(self):
+        """Saves an image URL"""
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        """
+        Deletes a given image
+        """
+        db.session.delete(self)
+        db.session.commit()
+
+    def __repr__(self):
+        """
+        Return a representation of an image instance
+        """
+        return "<Images: {}>".format(self.image_url)

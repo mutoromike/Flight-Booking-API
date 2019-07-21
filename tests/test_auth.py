@@ -1,8 +1,6 @@
 """ /tests/test_auth.py """
 
-from unittest import TestCase
 import json
-from app import db, create_app
 from tests.base import BaseTestCase
 
 class AuthTestCase(BaseTestCase):
