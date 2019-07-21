@@ -1,6 +1,5 @@
 """ /tests/test_auth.py """
 
-from unittest import TestCase
 import json
 from tests.base import BaseTestCase
 
