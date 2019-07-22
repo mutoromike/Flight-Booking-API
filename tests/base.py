@@ -1,6 +1,6 @@
 """ /tests/test_auth.py """
 import os
-
+import datetime
 from unittest import TestCase
 import json
 from app import db, create_app
@@ -38,6 +38,15 @@ class BaseTestCase(TestCase):
             'time': '5 PM'
         }
 
+        self.booking = {
+            "tickets": 1,
+            "flight_id": 1,
+            "ticket_type": "economy"
+        }
+        date = datetime.date.today()
+        self.date = {
+            "date": str(date)
+        }
         self.passport = {
             "image_url": "https://res.cloudinary.com/dd1qfqfag/image/upload/v1563726429/test_user_ic2fdy.jpg"
         }
