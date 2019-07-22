@@ -1,10 +1,17 @@
 import os
+from threading import Thread
 
 from flask import render_template, jsonify, make_response
 from flask_mail import Message, Mail
 from app.models.models import User, Bookings, Flights
 
+
 mail = Mail()
+
+def send_async_email(msg):
+    from manage import app
+    with app.app_context():
+        mail.send(msg)
 
 
 def send_approve(uname, email, name, origin, destination, date, time, seats):
@@ -21,8 +28,5 @@ def send_approve(uname, email, name, origin, destination, date, time, seats):
         date=date,
         time=time,
         seats=seats)
-    try:
-        mail.send(msg)
-        return True
-    except Exception as e:
-        return False
+    thread = Thread(target=send_async_email, args=[msg])
+    thread.start()
