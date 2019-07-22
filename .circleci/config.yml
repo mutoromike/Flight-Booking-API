@@ -52,4 +52,4 @@ jobs:
           destination: test-reports
       - store_test_results:
           path: test-reports/
-      - run: coveralls
+      - run: coverage run -m pytest -v
