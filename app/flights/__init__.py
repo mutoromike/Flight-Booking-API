@@ -2,7 +2,7 @@
 
 from flask import Blueprint
 
-# This instance of a Blueprint that represents the authentication blueprint
+# This instance of a Blueprint that represents the flights blueprint
 flight_blueprint = Blueprint('flights', __name__)
 
 from . import views

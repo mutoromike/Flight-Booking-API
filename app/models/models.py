@@ -2,21 +2,19 @@
     file to handle creation of models
 """
 
-from app import db
 from flask_bcrypt import Bcrypt
 import jwt
 from datetime import datetime, timedelta
 from flask import current_app
 
-reserve = db.Table('reserve',
-    db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
-    db.Column('flight_id', db.Integer, db.ForeignKey('flights.id'))
-    )
+from app.models.base import BaseModel
+from app import db
 
-class User(db.Model):
+
+class User(BaseModel):
 
     """
-    Class defining user table
+    Model defining user table
     """
     __tablename__ = "users"
 
@@ -24,8 +22,7 @@ class User(db.Model):
     username = db.Column(db.String(128), unique=True)
     email = db.Column(db.String(128))
     password = db.Column(db.String(256))
-    flights = db.relationship('Flights', order_by='Flights.id', cascade="all, delete-orphan")
-    client = db.relationship('Flights', secondary='reserve', backref=db.backref('reserve', lazy='dynamic'))
+    bookings = db.relationship('Bookings', backref='owner', lazy=True)
     images = db.relationship('Images', order_by='Images.id', cascade="all, delete-orphan")
     is_admin = db.Column(db.Boolean, unique=False, default=False)
 
@@ -45,14 +42,6 @@ class User(db.Model):
         """
 
         return Bcrypt().check_password_hash(self.password, password)
-
-    def save(self):
-        """
-        Save a user to the databse
-        """
-
-        db.session.add(self)
-        db.session.commit()
 
     def generate_token(self, user_id):
         """ Generates the access token"""
@@ -92,7 +81,7 @@ class User(db.Model):
 
 
 
-class Flights(db.Model):
+class Flights(BaseModel):
     """
     This class defines the flights table
     """
@@ -106,24 +95,8 @@ class Flights(db.Model):
     destination = db.Column(db.String(128))
     date = db.Column(db.String(255))
     time = db.Column(db.String(16384))
+    bookings = db.relationship('Bookings', backref='flighter', lazy=True)
     created_by = db.Column(db.Integer, db.ForeignKey(User.id))
-
-    def reserved(self, current_user):
-        """Check if a user has already RSVP to an event"""
-        return self.reserved.filter_by(id=current_user.id).first() is not None
-
-    def create_reservation(self, current_user):
-        """ Add a new user to a list of clients"""
-        if not self.reserved(current_user):
-            self.reserved.append(current_user)
-            self.save()
-            return "Reservation Created"
-        return "You already have a ticket for this flight"
-
-    def save(self):
-        """Create and edit a ticket"""
-        db.session.add(self)
-        db.session.commit()
 
     @staticmethod
     def get_all(user_id):
@@ -132,13 +105,6 @@ class Flights(db.Model):
         """
         return Events.query.filter_by(created_by=user_id)
 
-    def delete(self):
-        """
-        Deletes a given flight
-        """
-        db.session.delete(self)
-        db.session.commit()
-
     def __repr__(self):
         """
         Return a representation of a flight instance
@@ -146,7 +112,7 @@ class Flights(db.Model):
         return "<Flights: {}>".format(self.name)
 
 
-class BlacklistToken(db.Model):
+class BlacklistToken(BaseModel):
     """
     Token Model for storing blacklisted JWT tokens
     """
@@ -158,16 +124,11 @@ class BlacklistToken(db.Model):
     def __init__(self, token):
         self.token = token
 
-    def save(self):
-        """Save token"""
-        db.session.add(self)
-        db.session.commit()
-
     def __repr__(self):
         return '<id: token: {}'.format(self.token)
 
 
-class Images(db.Model):
+class Images(BaseModel):
     """
     Model to handle image urls
     """
@@ -176,21 +137,40 @@ class Images(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     image_url = db.Column(db.String(500))
     user = db.Column(db.Integer, db.ForeignKey(User.id))
-    
-    def save(self):
-        """Saves an image URL"""
-        db.session.add(self)
-        db.session.commit()
-
-    def delete(self):
-        """
-        Deletes a given image
-        """
-        db.session.delete(self)
-        db.session.commit()
 
     def __repr__(self):
         """
         Return a representation of an image instance
         """
         return "<Images: {}>".format(self.image_url)
+
+
+class Bookings(BaseModel):
+    """
+    Bookings Model
+    """
+
+    __tablename__ = 'bookings'
+
+    id = db.Column(db.Integer, primary_key=True)
+    booking_date = db.Column(db.String(64), nullable=False)
+    client_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    flight_id = db.Column(db.Integer, db.ForeignKey('flights.id'), nullable=False)
+    flight_status = db.Column(db.String(120), nullable=False, default='pending')
+    number_of_tickets = db.Column(db.Integer, nullable=False, default=1)
+    ticket_type = db.Column(db.String(255), nullable=False, default='economy')
+
+    def __init__(self, client_id, flight_id, date, ticket_type, no_of_tickets, status='pending'):
+        """Initialize the booking details"""
+        self.booking_date = date
+        self.client_id = client_id
+        self.flight_id = flight_id
+        self.flight_status = status
+        self.ticket_type = ticket_type
+        self.number_of_tickets=no_of_tickets
+
+    def __repr__(self):
+        """
+        Return a representation of a booking instance
+        """
+        return 'Bookings: {}'.format(self.id)
