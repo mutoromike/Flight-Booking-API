@@ -1,11 +1,14 @@
 """ app/__init__.py """
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Mail
 from flask_cors import CORS
 from config import app_config
 
 # initialize sql-alchemy
 db = SQLAlchemy()
+mail = Mail()
+
 
 def create_app(config_name):
 	# Initialize app
@@ -13,6 +16,7 @@ def create_app(config_name):
 	app.config.from_object(app_config[config_name])
 	app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 	db.init_app(app)
+	mail.init_app(app)
 	cors = CORS(app)
 
 	from .auth import authenticate
