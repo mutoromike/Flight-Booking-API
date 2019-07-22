@@ -52,3 +52,7 @@ jobs:
           destination: test-reports
       - store_test_results:
           path: test-reports/
+      - run:
+        name: Coverage
+        command: |
+          coverage run -m pytest -v
