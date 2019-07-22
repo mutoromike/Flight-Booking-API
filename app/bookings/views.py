@@ -118,6 +118,9 @@ class BookingsApproval(MethodView):
                 time=flight.time,
                 seats=booking.number_of_tickets
             )
+            if not send_approve:
+                response = {"message": "An error occurred!"}
+                return make_response(jsonify(response)), 500
             response = {"message": "Reservation Successfully approved!"}
             return make_response(jsonify(response)), 200
         except Exception as e:

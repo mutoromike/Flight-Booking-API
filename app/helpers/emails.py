@@ -12,9 +12,7 @@ def send_approve(uname, email, name, origin, destination, date, time, seats):
     sender = os.getenv('MAIL_USERNAME')
     msg = Message('Your Reservation Has Been Approved',
                   recipients=[email], sender=sender)
-    print("the recipient is", email)
-    msg.body = "Hello " + uname
-    msg.html = render_template('templates/ticket.html',
+    msg.html = render_template('send_email.html',
         uname=uname,
         email=email,
         name=name,
@@ -23,13 +21,8 @@ def send_approve(uname, email, name, origin, destination, date, time, seats):
         date=date,
         time=time,
         seats=seats)
-    # print("we are here")
-    # mail.send(msg)
     try:
-        print("we sre here")
         mail.send(msg)
-        # print("we sre here")
-        response = {"message": "Email sent successfully"}
-        return ake_response(jsonify(response))
+        return True
     except Exception as e:
         return False
