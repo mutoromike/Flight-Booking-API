@@ -22,7 +22,7 @@ def authorize(f):
                 current_user = User.query.filter_by(id=user_id).first()
                 return f(current_user, user_id, *args, **kwargs)
             except KeyError:
-                response = {"message": "One or more flight attributes are missing!"}
+                response = {"message": "One or more data attributes are missing!"}
                 return make_response(jsonify(response)), 500
 
         msg = {'message': 'Invalid token or Token has expired! PLEASE LOGIN!'}

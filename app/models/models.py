@@ -4,6 +4,7 @@
 
 from flask_bcrypt import Bcrypt
 import jwt
+import datetime
 from datetime import datetime, timedelta
 from flask import current_app
 
@@ -158,13 +159,16 @@ class Bookings(BaseModel):
     flight_id = db.Column(db.Integer, db.ForeignKey('flights.id'), nullable=False)
     flight_status = db.Column(db.String(120), nullable=False, default='pending')
     number_of_tickets = db.Column(db.Integer, nullable=False, default=1)
+    ticket_type = db.Column(db.String(255), nullable=False, default='economy')
 
-    def __init__(self, user_id, flight_id, date, status='pending'):
+    def __init__(self, client_id, flight_id, ticket_type, no_of_tickets, status='pending'):
         """Initialize the booking details"""
-        self.booking_date = datetime.datetime.now()
-        self.user_id = user_id
+        self.booking_date = datetime.now()
+        self.client_id = client_id
         self.flight_id = flight_id
         self.flight_status = status
+        self.ticket_type = ticket_type
+        self.number_of_tickets=no_of_tickets
 
     def __repr__(self):
         """
