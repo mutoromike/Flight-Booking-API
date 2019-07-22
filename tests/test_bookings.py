@@ -42,3 +42,21 @@ class BookingsTestCase(BaseTestCase):
         data=json.dumps(self.date), content_type='application/json' )
         self.assertEqual(result.status_code, 200)
 
+    def test_successful_reservation_approval(self):
+        """
+        Test successful reservation approval
+        """
+        access_token = self.get_admin_token() 
+        """Create Flight"""
+        result = self.client().post('/api/v1/flights', headers=dict(Authorization=access_token),
+        data=json.dumps(self.flight), content_type='application/json' )
+        """Book Flight"""
+        result1 = self.client().post('/api/v1/booking', headers=dict(Authorization=access_token),
+        data=json.dumps(self.booking), content_type='application/json' )
+        self.assertEqual(result1.status_code, 201)
+        results = json.loads(result1.data.decode())
+        """Approve flight"""
+        result2 = self.client().put('/api/v1/approve/{}'.format(results['id']),
+        headers=dict(Authorization=access_token), content_type='application/json' )
+        self.assertEqual(result2.status_code, 200)
+

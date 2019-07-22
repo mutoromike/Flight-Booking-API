@@ -160,14 +160,14 @@ class Bookings(BaseModel):
     number_of_tickets = db.Column(db.Integer, nullable=False, default=1)
     ticket_type = db.Column(db.String(255), nullable=False, default='economy')
 
-    def __init__(self, client_id, flight_id, date, ticket_type, no_of_tickets, status='pending'):
-        """Initialize the booking details"""
-        self.booking_date = date
-        self.client_id = client_id
-        self.flight_id = flight_id
-        self.flight_status = status
-        self.ticket_type = ticket_type
-        self.number_of_tickets=no_of_tickets
+    # def __init__(self, client_id, flight_id, date, ticket_type, no_of_tickets, status='pending'):
+    #     """Initialize the booking details"""
+    #     self.booking_date = date
+    #     self.client_id = client_id
+    #     self.flight_id = flight_id
+    #     self.flight_status = status
+    #     self.ticket_type = ticket_type
+    #     self.number_of_tickets=no_of_tickets
 
     def __repr__(self):
         """

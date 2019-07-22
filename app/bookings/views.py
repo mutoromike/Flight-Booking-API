@@ -39,18 +39,22 @@ class BookingsView(MethodView):
                 client_id=user_id,
                 flight_id=flight_id,
                 ticket_type=ticket_type,
-                no_of_tickets=no_of_tickets,
-                date=str(date)
+                number_of_tickets=no_of_tickets,
+                booking_date=str(date),
+                flight_status="pending"
             )
             new_booking.save()
 
             response = {
                 "message": "Booking successfully created. You'll " \
-                    "receive an email once the reservation is approved"
+                    "receive an email once the reservation is approved",
+                "id": new_booking.id
             }
             return make_response(jsonify(response)), 201
         except Exception as e:
-            response = {"message": str(e)}
+            response = {
+                "message": str(e)
+            }
             return make_response(jsonify(response)), 500 
 
     @authorize
@@ -80,11 +84,34 @@ class BookingsView(MethodView):
             return make_response(jsonify(response)), 500
 
 
+class BookingsApproval(MethodView):
+    """
+        Class to handle Admin Reservations approval
+    """
 
-
+    def put(self, booking_id):
+        """
+        PUT method to approve booking
+        """
+        booking = Bookings.query.filter_by(id=booking_id).first()
+        if not booking:
+            response = {
+                "message": "The specified reservation could not be found!"
+            }
+            return make_response(jsonify(response)), 404
+        try:
+            booking.flight_status = "approved"
+            booking.save()
+            response = {"message": "Reservation Successfully approved!"}
+            return make_response(jsonify(response)), 200
+        except Exception as e:
+            response = {"message": str(e)}
+            return make_response(jsonify(response)), 500
 
 
 booking_view = BookingsView.as_view('bookings')
+booking_approval_view = BookingsApproval.as_view('booking_approval')
 
 booking_blueprint.add_url_rule("/api/v1/booking", view_func=booking_view)
 booking_blueprint.add_url_rule('/api/v1/booking/<int:flight_id>', view_func=booking_view)
+booking_blueprint.add_url_rule('/api/v1/approve/<int:booking_id>', view_func=booking_approval_view)
