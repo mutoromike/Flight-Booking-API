@@ -53,7 +53,7 @@ jobs:
       - store_test_results:
           path: test-reports/
       - run:
-        name: Run Coverage
-        command: |
-          . env/bin/activate
-          coverage run -m pytest -v
+          name: Run Coverage
+          command: |
+            . env/bin/activate
+            coverage run -m pytest -v
