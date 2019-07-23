@@ -125,9 +125,49 @@ class BookingsApproval(MethodView):
             return make_response(jsonify(response)), 500
 
 
+class BookingStatus(MethodView):
+    """
+        Class to handle checking reservation status
+    """
+    @authorize
+    def get(self, user_id, current_user, booking_id):
+        """
+        GET method to check status
+        """
+        booking = Bookings.query.filter_by(id=booking_id).first()
+        if not booking:
+            response = {"message": "The reservation was not found"
+            }
+            return make_response(jsonify(response)), 404
+        flight_id = booking.flight_id
+        user = booking.client_id
+        if user != user_id:
+            response = {"message": "You can only check your own flight status"}
+            return make_response(jsonify(response)), 401
+        flight = Flights.query.filter_by(id=flight_er).first()
+        f_name = flight.name
+        status = booking.flight_status
+        if status == "pending":
+            response = {"message": "Your reservation for Flight " + f_name + \
+                " is yet to be approved. You will receive an email when it's approved"
+            }
+            return make_response(jsonify(response)), 200
+        if status == "approved":
+            response = {"message": "Your reservation for Flight " + f_name + \
+                " is approved! Check your email for the ticket!"
+            }
+            return make_response(jsonify(response)), 200
+        else:
+            response = {"message": "There was an error processing your request"
+            }
+            return make_response(jsonify(response)), 200
+
+
 booking_view = BookingsView.as_view('bookings')
 booking_approval_view = BookingsApproval.as_view('booking_approval')
+booking_status_view = BookingStatus.as_view('booking_status')
 
 booking_blueprint.add_url_rule("/api/v1/booking", view_func=booking_view)
 booking_blueprint.add_url_rule('/api/v1/booking/<int:flight_id>', view_func=booking_view)
 booking_blueprint.add_url_rule('/api/v1/approve/<int:booking_id>', view_func=booking_approval_view)
+booking_blueprint.add_url_rule('/api/v1/status/<int:booking_id>', view_func=booking_status_view)
