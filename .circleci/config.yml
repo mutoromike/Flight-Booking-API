@@ -57,3 +57,4 @@ jobs:
           command: |
             . env/bin/activate
             coverage run -m pytest -v
+            coveralls
