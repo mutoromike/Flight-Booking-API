@@ -106,3 +106,18 @@ class FlightsTestCase(BaseTestCase):
             '/api/v1/flight/{}'.format(results['id']),
             headers=dict(Authorization= access_token))
         self.assertIn("A876", str(results.data))
+
+    def test_flights_created_by_admin(self):
+        """Test API can edit an existing flight. (PUT request)"""
+        access_token = self.get_admin_token()
+        # Create a flight
+        self.client().post(
+            '/api/v1/flights',
+            headers=dict(Authorization= access_token),
+            data=json.dumps(self.flight), content_type='application/json')
+
+        # Get the created flight
+        results = self.client().get(
+            '/api/v1/flights',
+            headers=dict(Authorization= access_token))
+        self.assertEqual(results.status_code, 200)
