@@ -26,7 +26,7 @@ class BookingsTestCase(BaseTestCase):
 
     def test_reservation_request(self):
         """
-        Test unsuccessful booking 
+        Test unsuccessful booking
         """
         access_token = self.get_admin_token() 
 

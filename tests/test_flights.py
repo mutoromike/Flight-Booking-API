@@ -111,7 +111,7 @@ class FlightsTestCase(BaseTestCase):
         """Test API can edit an existing flight. (PUT request)"""
         access_token = self.get_admin_token()
         # Create a flight
-        req = self.client().post(
+        self.client().post(
             '/api/v1/flights',
             headers=dict(Authorization= access_token),
             data=json.dumps(self.flight), content_type='application/json')
