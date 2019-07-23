@@ -39,7 +39,7 @@ class BookingsTestCase(BaseTestCase):
 
     def test_unsuccessful_reservation(self):
         """
-        Test unsuccessful booking 
+        Test unsuccessful booking
         """
         access_token = self.get_admin_token() 
         
@@ -68,13 +68,12 @@ class BookingsTestCase(BaseTestCase):
 
     def test_error_in_get_day_bookings(self):
         """
-        Test error in get all bookings on a specific day 
+        Test error in get all bookings on a specific day
         """
         access_token = self.get_admin_token() 
         """Create Flight"""
         result = self.client().post('/api/v1/flights', headers=dict(Authorization=access_token),
         data=json.dumps(self.flight), content_type='application/json' )
-        results = json.loads(result.data.decode())
         """Book Flight"""
         result1 = self.client().post('/api/v1/booking', headers=dict(Authorization=access_token),
         data=json.dumps(self.booking), content_type='application/json' )
@@ -108,7 +107,6 @@ class BookingsTestCase(BaseTestCase):
         Test unsuccessful reservation approval
         """
         access_token = self.get_admin_token()
-        """Approve missing booking"""
         result2 = self.client().put('/api/v1/approve/{}'.format(5),
         headers=dict(Authorization=access_token), content_type='application/json' )
         self.assertEqual(result2.status_code, 404)
@@ -162,7 +160,6 @@ class BookingsTestCase(BaseTestCase):
         result1 = self.client().post('/api/v1/booking', headers=dict(Authorization=access_token),
         data=json.dumps(self.booking), content_type='application/json' )
         self.assertEqual(result1.status_code, 201)
-        results = json.loads(result1.data.decode())
         """Check Flight Status"""
         result2 = self.client().get('/api/v1/status/{}'.format(233), headers=dict(Authorization=access_token),
         content_type='application/json' )
@@ -182,7 +179,6 @@ class BookingsTestCase(BaseTestCase):
         data=json.dumps(self.booking), content_type='application/json' )
         self.assertEqual(result1.status_code, 201)
         results = json.loads(result1.data.decode())
-        """Check Flight Status"""
         result2 = self.client().get('/api/v1/status/{}'.format(results["id"]), headers=dict(Authorization=new_access_token),
         content_type='application/json' )
         self.assertEqual(result2.status_code, 401)
