@@ -56,5 +56,5 @@ jobs:
           name: Run Coverage
           command: |
             . env/bin/activate
-            coverage run -m pytest --cov=app/ tests/
+            coverage run -m pytest --cov=env/
             coveralls
