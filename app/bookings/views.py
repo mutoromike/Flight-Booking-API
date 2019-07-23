@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, abort, make_response, g
+from flask import Flask, request, jsonify, make_response
 from flask.views import MethodView
 import datetime
 
@@ -96,13 +96,13 @@ class BookingsApproval(MethodView):
         PUT method to approve booking
         """
         booking = Bookings.query.filter_by(id=booking_id).first()
-        flight_id = booking.flight_id
-        user = booking.client_id
         if not booking:
             response = {
                 "message": "The specified reservation could not be found!"
             }
             return make_response(jsonify(response)), 404
+        flight_id = booking.flight_id
+        user = booking.client_id
         try:
             flight = Flights.query.filter_by(id=flight_id).first()
             client = User.query.filter_by(id=user).first()
@@ -144,7 +144,7 @@ class BookingStatus(MethodView):
         if user != user_id:
             response = {"message": "You can only check your own flight status"}
             return make_response(jsonify(response)), 401
-        flight = Flights.query.filter_by(id=flight_er).first()
+        flight = Flights.query.filter_by(id=flight_id).first()
         f_name = flight.name
         status = booking.flight_status
         if status == "pending":
@@ -160,7 +160,7 @@ class BookingStatus(MethodView):
         else:
             response = {"message": "There was an error processing your request"
             }
-            return make_response(jsonify(response)), 200
+            return make_response(jsonify(response)), 500
 
 
 booking_view = BookingsView.as_view('bookings')
