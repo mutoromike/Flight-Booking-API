@@ -33,7 +33,7 @@ class BookingsTestCase(BaseTestCase):
         """Book Flight"""
         result1 = self.client().post('/api/v1/booking', headers=dict(Authorization=access_token),
         data=json.dumps(self.booking), content_type='application/json' )
-        self.assertEqual(result1.status_code, 404)
+        self.assertEqual(result1.status_code, 400)
 
     def test_get_day_bookings(self):
         """
