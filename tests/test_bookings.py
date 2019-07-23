@@ -24,6 +24,17 @@ class BookingsTestCase(BaseTestCase):
         data=json.dumps(self.booking), content_type='application/json' )
         self.assertEqual(result1.status_code, 201)
 
+    def test_unsuccessful_reservation(self):
+        """
+        Test successful booking 
+        """
+        access_token = self.get_admin_token() 
+        
+        """Book Flight"""
+        result1 = self.client().post('/api/v1/booking', headers=dict(Authorization=access_token),
+        data=json.dumps(self.booking), content_type='application/json' )
+        self.assertEqual(result1.status_code, 400)
+
     def test_get_day_bookings(self):
         """
         Test get all bookings on a specific day 

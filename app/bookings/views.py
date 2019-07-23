@@ -5,7 +5,8 @@ import datetime
 from . import booking_blueprint
 from app.models.models import Flights, User, Bookings
 from app.helpers.tickets import validate_ticket
-from app.helpers.auth import authorize
+from app.helpers.auth import authorize, check_user_role
+from app.helpers.emails import send_approve
 
 import re
 
@@ -88,20 +89,35 @@ class BookingsApproval(MethodView):
     """
         Class to handle Admin Reservations approval
     """
-
-    def put(self, booking_id):
+    @authorize
+    @check_user_role
+    def put(self, user_id, current_user, booking_id):
         """
         PUT method to approve booking
         """
         booking = Bookings.query.filter_by(id=booking_id).first()
+        flight_id = booking.flight_id
+        user = booking.client_id
         if not booking:
             response = {
                 "message": "The specified reservation could not be found!"
             }
             return make_response(jsonify(response)), 404
         try:
+            flight = Flights.query.filter_by(id=flight_id).first()
+            client = User.query.filter_by(id=user).first()
             booking.flight_status = "approved"
             booking.save()
+            send_approve(
+                uname=client.username,
+                email=client.email,
+                name=flight.name,
+                origin=flight.origin,
+                destination=flight.destination,
+                date=flight.date,
+                time=flight.time,
+                seats=booking.number_of_tickets
+            )
             response = {"message": "Reservation Successfully approved!"}
             return make_response(jsonify(response)), 200
         except Exception as e:

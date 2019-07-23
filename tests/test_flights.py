@@ -6,7 +6,7 @@ import json
 
 from tests.base import BaseTestCase
 
-class EventsTestCase(BaseTestCase):
+class FlightsTestCase(BaseTestCase):
     """
     This class represents the flights test case
     """
