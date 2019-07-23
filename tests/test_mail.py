@@ -1,4 +1,4 @@
-from flask_mail import Mail, Message, BadHeaderError, sanitize_address, PY3
+from flask_mail import Mail, Message, BadHeaderError, sanitize_address
 import json
 from email.header import Header
 
