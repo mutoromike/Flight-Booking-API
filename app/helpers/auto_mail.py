@@ -49,7 +49,6 @@ def generate_message():
 
 
 def send_email():
-    print("we are here.......")
     from manage import app
     with app.app_context():
         bookings = get_bookings()
