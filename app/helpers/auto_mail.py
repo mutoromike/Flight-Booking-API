@@ -55,17 +55,17 @@ def send_email():
         if not bookings:
             logging.info("There are no RESERVATIONS FOR TOMORROW")
         else:
-            logging.info("creating the mailing lists ...")
+            logging.info("GENERATING EMAILS...")
             messages = generate_message()
 
-            logging.info("connecting to the mail server ...")
+            logging.info("CONNECTING MAIL SERVICE...")
             for message in messages:
                 try:
                     with app.app_context():
                         mail.send(message)
-                        logging.info("sending success: " + str(message.recipients))
+                        logging.info("SENDING MAILS SUCCESSFUL " + str(message.recipients))
                 except Exception as e:
-                    logging.warning("sending failed: " + str(message.recipients))
+                    logging.warning("SENDING MAILS SUCCESSFUL " + str(message.recipients))
 
 
 def background_scheduler():
