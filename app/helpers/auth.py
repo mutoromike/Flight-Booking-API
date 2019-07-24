@@ -1,3 +1,4 @@
+import os
 import re
 import psycopg2
 from functools import wraps
@@ -79,7 +80,7 @@ def with_connection(f):
         """
         Function to check DB connection
         """
-        conn = psycopg2.connect('')
+        conn = psycopg2.connect(os.getenv('DSN'))
         try:
             rv = f(conn, *args, **kwargs)
         except Exception as e:
