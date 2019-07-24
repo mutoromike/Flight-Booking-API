@@ -22,11 +22,11 @@ jobs:
       - checkout
       - run: mkdir test-reports
       # Download and cache dependencies
-      - restore_cache:
-          keys: 
-            - deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
-            # fallback to using the latest cache if no exact match is found
-            - deps1-
+      # - restore_cache:
+      #     keys: 
+      #       - deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
+      #       # fallback to using the latest cache if no exact match is found
+      #       - deps1-
 
       - run:
           name: install dependencies
