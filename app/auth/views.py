@@ -15,7 +15,7 @@ class RegisterUser(MethodView):
         This class handles user registration
     """
     @with_connection
-    def post(self, conn):
+    def post(self, cnn):
 
         data = request.get_json()
         user = User.query.filter_by(email=data['email']).first()
