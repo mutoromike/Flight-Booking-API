@@ -5,6 +5,8 @@ from flask_mail import Mail
 from flask_cors import CORS
 from config import app_config
 
+
+
 # initialize sql-alchemy
 db = SQLAlchemy()
 mail = Mail()
@@ -18,7 +20,9 @@ def create_app(config_name):
 	db.init_app(app)
 	mail.init_app(app)
 	cors = CORS(app)
+	from app.helpers.auto_mail import background_scheduler
 
+	background_scheduler()
 	from .auth import authenticate
 	from .flights import flight_blueprint
 	from .images import image_blueprint
