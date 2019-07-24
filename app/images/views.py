@@ -9,7 +9,7 @@ from cloudinary.utils import cloudinary_url
 
 from . import image_blueprint
 from app.models.models import User, Images
-from app.helpers.auth import authorize
+from app.helpers.auth import authorize, with_connection
 
 import re
 
@@ -20,8 +20,9 @@ class ProcessImages(MethodView):
             Uploading
             Changing
     """
+    @with_connection
     @authorize
-    def post(self, user_id, current_user):
+    def post(self, user_id, current_user, conn):
         """
         POST method to upload image to
         remote server and save image url
@@ -47,19 +48,13 @@ class ProcessImages(MethodView):
                 gravity="faces",
                 crop="fill"
             )
-
-            try:
-                new_image = Images(
-                    image_url=url,
-                    user=user_id
-                )
-                new_image.save()
-                response = { 'message': "Passport has been uploaded successfully" }
-                return make_response(jsonify(response)), 201
-            except Exception as e:
-                # An error occured, therefore return a string message containing the error
-                response = { 'message': str(e) }
-                return make_response(jsonify(response)), 500
+            new_image = Images(
+                image_url=url,
+                user=user_id
+            )
+            new_image.save()
+            response = { 'message': "Passport has been uploaded successfully" }
+            return make_response(jsonify(response)), 201
 
     @authorize
     def get(self, user_id, current_user):
@@ -72,21 +67,17 @@ class ProcessImages(MethodView):
         }
         return make_response(jsonify(response)), 200
 
+    @with_connection
     @authorize
-    def delete(self, user_id, current_user):
+    def delete(self, user_id, current_user, conn):
         """
         Method to delete a client's passport url
         """
         image = Images.query.filter_by(user=user_id).first()
-        # image_url = image.image_url
-        try:
-            destroy(str(user_id))
-            image.delete()
-            response = {"message": "Passport successfully deleted"}
-            return make_response(jsonify(response)), 200
-        except Exception as e:
-            response = {"message": str(e)}
-            return make_response(jsonify(response)), 500
+        destroy(str(user_id))
+        image.delete()
+        response = {"message": "Passport successfully deleted"}
+        return make_response(jsonify(response)), 200
     
 
 images_view = ProcessImages.as_view('images')

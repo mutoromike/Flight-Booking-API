@@ -73,7 +73,7 @@ def background_scheduler():
     scheduler.start()
     scheduler.add_job(
         func=send_email,
-        trigger=IntervalTrigger(start_date='2019-07-24 14:55:00', minutes=1),
+        trigger=IntervalTrigger(start_date='2019-07-24 14:55:00', minutes=30),
         id='job_to_remind_clients',
         name='BACKGROUND JOB SENDING EMAILS',
         replace_existing=True)

@@ -58,6 +58,10 @@ class BookingsTestCase(BaseTestCase):
         data=json.dumps(self.flight), content_type='application/json' )
         results = json.loads(result.data.decode())
 
+        result3 = self.client().get('/api/v1/booking/{}'.format(results['id']), headers=dict(Authorization=access_token),
+        data=json.dumps(self.date), content_type='application/json' )
+        self.assertEqual(result3.status_code, 404)
+
         result1 = self.client().post('/api/v1/booking', headers=dict(Authorization=access_token),
         data=json.dumps(self.booking), content_type='application/json' )
         self.assertEqual(result1.status_code, 201)
