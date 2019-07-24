@@ -75,40 +75,22 @@ def check_user_role(f):
     return decorated
 
 
-# def with_connection(f):
-#     def with_connection_(*args, **kwargs):
-#         """
-#         Function to check DB connection
-#         """
-#         conn = psycopg2.connect(os.getenv('DSN'))
-#         try:
-#             rv = f(conn, *args, **kwargs)
-#         except Exception as e:
-#             conn.rollback()
-#             raise
-#         else:
-#             conn.commit() # or maybe not
-#         finally:
-#             conn.close()
-
-#         return rv
-
-#     return with_connection_
-
-cnn = None
 def with_connection(f):
-
     def with_connection_(*args, **kwargs):
-        global cnn
-        if not cnn:
-            cnn = psycopg2.connect(os.getenv('DSN'))
+        """
+        Function to check DB connection
+        """
+        conn = psycopg2.connect(os.getenv('DSN'))
         try:
-            rv = f(cnn, *args, **kwargs)
+            rv = f(conn, *args, **kwargs)
         except Exception as e:
-            cnn.rollback()
+            conn.rollback()
             raise
         else:
-            cnn.commit() # or maybe not        
+            conn.commit() # or maybe not
+        finally:
+            conn.close()
+
         return rv
 
     return with_connection_
