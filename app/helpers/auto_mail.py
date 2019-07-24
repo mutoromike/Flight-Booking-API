@@ -3,7 +3,7 @@ import atexit
 import logging
 from datetime import datetime, timedelta
 
-from flask import jsonify, make_response
+from flask import render_template, jsonify, make_response
 from flask_mail import Message, Mail
 from app.models.models import Bookings, User, Flights
 import os
@@ -34,12 +34,14 @@ def generate_message():
             flight = Flights.query.filter_by(id=booking.flight_id).first()
             msg = Message('Flight Reservation Reminder!',
                 recipients=[user.email], sender="support@smartflights.com")
-            msg.html = f'Hello {user.username},'
-            f'<p> This is to remind you of your scheduled flight <b>{flight.name}</b>'
-            f'from <b>{flight.origin}</b> on <b>{booking.booking_date}</b> </p>'
-            f'<p> Please check in for your flight three hours before <b>{flight.time}</b>,'
-            f' the DEPARTURE TIME</p>'
-            f'<p> Thank you </p>'
+            msg.html = render_template('reminder_mail.html',
+                username=user.username,
+                name=flight.name,
+                origin=flight.origin,
+                date=booking.booking_date,
+                time=flight.time
+            )
+            
             message_list.append(msg)
         else:
             pass
@@ -72,7 +74,7 @@ def background_scheduler():
     scheduler.start()
     scheduler.add_job(
         func=send_email,
-        trigger=IntervalTrigger(start_date='2019-07-24 13:44:00', minutes=1),
+        trigger=IntervalTrigger(start_date='2019-07-24 14:55:00', minutes=1),
         id='job_to_remind_clients',
         name='BACKGROUND JOB SENDING EMAILS',
         replace_existing=True)
