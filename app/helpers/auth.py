@@ -1,4 +1,6 @@
+import os
 import re
+import psycopg2
 from functools import wraps
 from flask import Flask, request, jsonify, make_response
 from app.models.models import User, BlacklistToken
@@ -71,3 +73,24 @@ def check_user_role(f):
             return make_response(jsonify(response)), 401
         return f(*args, **kwargs)
     return decorated
+
+
+def with_connection(f):
+    def with_connection_(*args, **kwargs):
+        """
+        Function to check DB connection
+        """
+        conn = psycopg2.connect(os.getenv('DSN'))
+        try:
+            rv = f(conn, *args, **kwargs)
+        except Exception as e:
+            conn.rollback()
+            raise
+        else:
+            conn.commit() # or maybe not
+        finally:
+            conn.close()
+
+        return rv
+
+    return with_connection_

@@ -7,15 +7,15 @@ from flask.views import MethodView
 from flask import make_response, request, jsonify, g
 
 from app.models.models import User, BlacklistToken
-from app.helpers.auth import authorize, register_details
+from app.helpers.auth import authorize, register_details, with_connection
 
 
 class RegisterUser(MethodView):
     """
         This class handles user registration
     """
-
-    def post(self):
+    @with_connection
+    def post(self, conn):
 
         data = request.get_json()
         user = User.query.filter_by(email=data['email']).first()
@@ -37,20 +37,15 @@ class RegisterUser(MethodView):
             # User already exists. Skip registration
             response = {'message': 'User already exists. Please login.'}
             return make_response(jsonify(response)), 199
-        try:
-            # Register the user
-            user = User(
-                    username=username,
-                    email=email,
-                    password=password,
-                    is_admin=False)
-            user.save()
-            response = {'message': 'You registered successfully. Please log in.'}
-            # return a response notifying the user that they registered successfully      
-        except Exception as e:
-            # An error occured, therefore return a string message containing the error
-            response = {'message': str(e)}
-            return make_response(jsonify(response)), 401
+        # Register the user
+        user = User(
+                username=username,
+                email=email,
+                password=password,
+                is_admin=False)
+        user.save()
+        response = {'message': 'You registered successfully. Please log in.'}
+        # return a response notifying the user that they registered successfully 
         return make_response(jsonify(response)), 201
 
 
@@ -58,36 +53,28 @@ class LoginUser(MethodView):
     """
         This class handles user login
     """
+    @with_connection
+    def post(self, conn):
 
-    def post(self):
+        # Get the user object using their email (unique to every user)
+        req = request.get_json()
+        user = User.query.filter_by(email=req['email']).first()
 
-        try:
-            # Get the user object using their email (unique to every user)
-            req = request.get_json()
-            user = User.query.filter_by(email=req['email']).first()
-
-            # Try to authenticate the found user using their password
-            if user and user.password_is_valid(req['password']):
-                # Generate the access token. This will be used as the authorization header
-                access_token = user.generate_token(user.id)
-                if access_token:
-                    g.current_user = user
-                    print("the current user is", user.id)
-                    response = {
-                        'message': 'You logged in successfully.',
-                        'access_token': access_token.decode()
-                    }
-                    return make_response(jsonify(response)), 200
-            else:
-                # User does not exist. Therefore, we return an error message
-                response = {'message': 'Invalid email or password, Please try again'}
-                return make_response(jsonify(response)), 401
-
-        except Exception as e:
-            # Create a response containing an string error message
-            response = {'message': str(e)}
-            # Return a server error using the HTTP Error Code 500 (Internal Server Error)
-            return make_response(jsonify(response)), 500
+        # Try to authenticate the found user using their password
+        if user and user.password_is_valid(req['password']):
+            # Generate the access token. This will be used as the authorization header
+            access_token = user.generate_token(user.id)
+            if access_token:
+                g.current_user = user
+                response = {
+                    'message': 'You logged in successfully.',
+                    'access_token': access_token.decode()
+                }
+                return make_response(jsonify(response)), 200
+        else:
+            # User does not exist. Therefore, we return an error message
+            response = {'message': 'Invalid email or password, Please try again'}
+            return make_response(jsonify(response)), 401
 
 
 class LogoutUser(MethodView):
@@ -95,7 +82,8 @@ class LogoutUser(MethodView):
         This class handles user LOGOUT
     """
 
-    def post(self):
+    @with_connection
+    def post(self, conn):
 
         header = request.headers.get('Authorization')
         if header:
@@ -105,26 +93,20 @@ class LogoutUser(MethodView):
         if access_token:
             value = User.decode_token(access_token)
             if not isinstance(value, str):
-                try:
-                    # mark token as blacklisted
-                    token = BlacklistToken.query.filter_by(token=access_token).first()
-                    if token:
-                        response = {
-                            'message': 'You have been logged out already!'
-                        }
-                        return make_response(jsonify(response)), 401
+                # mark token as blacklisted
+                token = BlacklistToken.query.filter_by(token=access_token).first()
+                if token:
+                    response = {
+                        'message': 'You have been logged out already!'
+                    }
+                    return make_response(jsonify(response)), 401
 
-                    blacklist_token = BlacklistToken(token=access_token)
-                    blacklist_token.save()
-                    response = {
-                        'message': 'Successfully logged out.'
-                    }
-                    return make_response(jsonify(response)), 200
-                except Exception as e:
-                    response = {
-                        'message': e
-                    }
-                    return make_response(jsonify(response)), 400
+                blacklist_token = BlacklistToken(token=access_token)
+                blacklist_token.save()
+                response = {
+                    'message': 'Successfully logged out.'
+                }
+                return make_response(jsonify(response)), 200
             else:
                 response = {
                     'message': 'Failed! Auth token corrupt!'

@@ -156,16 +156,28 @@ class AuthTestCase(BaseTestCase):
         self.assertEqual(
             result['message'], "Invalid email or password, Please try again")
 
-    def test_successful_logout(self):
-        """Test if a user can successfully logout"""
+    def test_logout(self):
+        """Test if a user can successfully logout and bad logout"""
         # Get token
         access_token = self.get_token()
         # Logout user
+        added = "FgT"
+        empty_token = ""
+        new_token = access_token + added
         res = self.client().post('/api/v1/auth/logout', headers=dict(Authorization=access_token),
         content_type='application/json')
         self.assertEqual(res.status_code, 200)
         result = json.loads(res.data.decode())
         self.assertIn('Successfully logged out.', result['message'])
+        result1 = self.client().post('/api/v1/auth/logout', headers=dict(Authorization=new_token),
+        content_type='application/json')
+        self.assertEqual(result1.status_code, 401)
+        result2 = self.client().post('/api/v1/auth/logout', headers=dict(Authorization=empty_token),
+        content_type='application/json')
+        self.assertEqual(result2.status_code, 403)
+        result3 = self.client().post('/api/v1/auth/logout',
+        content_type='application/json')
+        self.assertEqual(result3.status_code, 403)
 
     def test_repeat_logout(self):
         """Test if a user is prevented to logout twice"""

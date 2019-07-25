@@ -7,7 +7,7 @@ from flask.views import MethodView
 from . import flight_blueprint
 from app.models.models import Flights, User
 from app.helpers.flight import validate_data
-from app.helpers.auth import authorize, check_user_role
+from app.helpers.auth import authorize, check_user_role, with_connection
 
 
 class FlightsView(MethodView):
@@ -16,10 +16,10 @@ class FlightsView(MethodView):
             :Creation and Fetching flights (by users)
     """
 
-
+    @with_connection
     @authorize
     @check_user_role
-    def post(self, user_id, current_user):
+    def post(self, user_id, current_user, conn):
         """ 
             Method to create flight.
         """
@@ -37,20 +37,16 @@ class FlightsView(MethodView):
         existing = Flights.query.filter_by(name=name).first()
         if existing:
             response = {"message" : "A similar flight already exists!"}
-            return make_response(jsonify(response)), 302    
-        try:
-            created_flight = Flights(name=name, origin=origin, destination=destination,
-            date=date, time=time, created_by=user_id)
-            created_flight.save()
-            response = jsonify({
-                'id': created_flight.id, 'name' : created_flight.name, 'origin' : created_flight.origin,
-                'destination' : created_flight.destination, 'date' : created_flight.date,
-                'time' : created_flight.time, 'created_by' : created_flight.created_by,
-                'message': 'Flight successfully created'
-            })
-        except KeyError:
-            response = {"message": "There was an error creating the flight, please try again"}
-            return make_response(jsonify(response)), 500                            
+            return make_response(jsonify(response)), 302
+        created_flight = Flights(name=name, origin=origin, destination=destination,
+        date=date, time=time, created_by=user_id)
+        created_flight.save()
+        response = jsonify({
+            'id': created_flight.id, 'name' : created_flight.name, 'origin' : created_flight.origin,
+            'destination' : created_flight.destination, 'date' : created_flight.date,
+            'time' : created_flight.time, 'created_by' : created_flight.created_by,
+            'message': 'Flight successfully created'
+        })                           
         return make_response(response), 201
     
     @authorize

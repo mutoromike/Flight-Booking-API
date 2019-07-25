@@ -35,6 +35,7 @@ class ProductionConfig(Config):
     SECRET_KEY = os.getenv('SECRET_KEY')
     DEBUG = False
     TESTING = False
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
 
 app_config = {
     'development': DevelopmentConfig,

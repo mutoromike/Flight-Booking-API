@@ -5,7 +5,7 @@ import datetime
 from . import booking_blueprint
 from app.models.models import Flights, User, Bookings
 from app.helpers.tickets import validate_ticket
-from app.helpers.auth import authorize, check_user_role
+from app.helpers.auth import authorize, check_user_role, with_connection
 from app.helpers.emails import send_approve
 
 import re
@@ -16,8 +16,9 @@ class BookingsView(MethodView):
     Class to handle bookings
     """
 
+    @with_connection
     @authorize
-    def post(self, user_id, current_user):
+    def post(self, user_id, current_user, conn):
         """
             Method to create a flight reservation
         """
@@ -35,28 +36,22 @@ class BookingsView(MethodView):
             return make_response(jsonify(response)), 400 
         ticket_type = ticket_type.lower()
         date = datetime.date.today()
-        try:
-            new_booking = Bookings(
-                client_id=user_id,
-                flight_id=flight_id,
-                ticket_type=ticket_type,
-                number_of_tickets=no_of_tickets,
-                booking_date=str(date),
-                flight_status="pending"
-            )
-            new_booking.save()
+        new_booking = Bookings(
+            client_id=user_id,
+            flight_id=flight_id,
+            ticket_type=ticket_type,
+            number_of_tickets=no_of_tickets,
+            booking_date=str(date),
+            flight_status="pending"
+        )
+        new_booking.save()
 
-            response = {
-                "message": "Booking successfully created. You'll " \
-                    "receive an email once the reservation is approved",
-                "id": new_booking.id
-            }
-            return make_response(jsonify(response)), 201
-        except Exception as e:
-            response = {
-                "message": str(e)
-            }
-            return make_response(jsonify(response)), 500 
+        response = {
+            "message": "Booking successfully created. You'll " \
+                "receive an email once the reservation is approved",
+            "id": new_booking.id
+        }
+        return make_response(jsonify(response)), 201
 
     @authorize
     def get(self, user_id, current_user, flight_id):
@@ -66,32 +61,31 @@ class BookingsView(MethodView):
         """
         data = request.get_json()
         date = data["date"]
-        print("the date is ", date)
-        try:
-            flight = Flights.query.filter_by(id=flight_id).first()
-            if not flight:
-                response = {"message": "The specified flight could not be found!"}
-                return make_response(jsonify(response)), 404
-            bookings = Bookings.query.filter(Bookings.flight_id==flight_id, Bookings.booking_date==date).all()
-            booking_size = []
+        flight = Flights.query.filter_by(id=flight_id).first()
+        if not flight:
+            response = {"message": "The specified flight could not be found!"}
+            return make_response(jsonify(response)), 404
+        bookings = Bookings.query.filter(Bookings.flight_id==flight_id, Bookings.booking_date==date).all()
+        if not bookings:
+            response = {"message": "Bookings for this flight not found!"}
+            return make_response(jsonify(response)), 404
+        booking_size = []
 
-            for booking in bookings:
-                booking_size.append(booking)
-            response = {'number_of_bookings': len(booking_size),
-                        'message': "Data retrived successfully"}
-            return jsonify(response), 200
-        except Exception as e:
-            response = {"message": str(e)}
-            return make_response(jsonify(response)), 500
+        for booking in bookings:
+            booking_size.append(booking)
+        response = {'number_of_bookings': len(booking_size),
+                    'message': "Data retrived successfully"}
+        return jsonify(response), 200
 
 
 class BookingsApproval(MethodView):
     """
         Class to handle Admin Reservations approval
     """
+    @with_connection
     @authorize
     @check_user_role
-    def put(self, user_id, current_user, booking_id):
+    def put(self, user_id, current_user, conn, booking_id):
         """
         PUT method to approve booking
         """
@@ -103,26 +97,22 @@ class BookingsApproval(MethodView):
             return make_response(jsonify(response)), 404
         flight_id = booking.flight_id
         user = booking.client_id
-        try:
-            flight = Flights.query.filter_by(id=flight_id).first()
-            client = User.query.filter_by(id=user).first()
-            booking.flight_status = "approved"
-            booking.save()
-            send_approve(
-                uname=client.username,
-                email=client.email,
-                name=flight.name,
-                origin=flight.origin,
-                destination=flight.destination,
-                date=flight.date,
-                time=flight.time,
-                seats=booking.number_of_tickets
-            )
-            response = {"message": "Reservation Successfully approved!"}
-            return make_response(jsonify(response)), 200
-        except Exception as e:
-            response = {"message": str(e)}
-            return make_response(jsonify(response)), 500
+        flight = Flights.query.filter_by(id=flight_id).first()
+        client = User.query.filter_by(id=user).first()
+        booking.flight_status = "approved"
+        booking.save()
+        send_approve(
+            uname=client.username,
+            email=client.email,
+            name=flight.name,
+            origin=flight.origin,
+            destination=flight.destination,
+            date=flight.date,
+            time=flight.time,
+            seats=booking.number_of_tickets
+        )
+        response = {"message": "Reservation Successfully approved!"}
+        return make_response(jsonify(response)), 200
 
 
 class BookingStatus(MethodView):
@@ -158,9 +148,10 @@ class BookingStatus(MethodView):
             }
             return make_response(jsonify(response)), 200
         else:
-            response = {"message": "There was an error processing your request"
+            response = {"message": "Your reservation for Flight " + f_name + \
+                " is not yet approved. You'll receive an email once it's done!"
             }
-            return make_response(jsonify(response)), 500
+            return make_response(jsonify(response)), 200
 
 
 booking_view = BookingsView.as_view('bookings')
