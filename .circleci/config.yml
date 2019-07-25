@@ -15,6 +15,7 @@ jobs:
         environment:
           POSTGRES_USER: root
           POSTGRES_DB: flight_api
+          PGHOST: 127.0.0.1
 
     working_directory: ~/Flight-Booking-API
 
