@@ -7,21 +7,20 @@ jobs:
       # version
       - image: circleci/python:3.6.1
         environment: # environment variables for primary container
-          TEST_DB_URL: postgresql://root:soc@localhost:5432/test-db
+          TEST_DB_URL: postgresql://root@localhost/flight_api?sslmode=disable
           FLASK_APP: manage.py
           APP_SETTINGS: testing
       
       - image: circleci/postgres:9.4
         environment:
           POSTGRES_USER: root
-          POSTGRES_PASSWORD: soc
-          POSTGRES_DB: test_db
+          POSTGRES_DB: flight_api
 
     working_directory: ~/Flight-Booking-API
 
     steps:
       - checkout
-      - run: mkdir test-reports
+      # - run: mkdir test-reports
       # Download and cache dependencies
       - restore_cache:
           keys: 
@@ -48,11 +47,11 @@ jobs:
             . env/bin/activate
             pytest --cov=app/ tests/
 
-      - store_artifacts:
-          path: test-reports
-          destination: test-reports
-      - store_test_results:
-          path: test-reports/
+      # - store_artifacts:
+      #     path: test-reports
+      #     destination: test-reports
+      # - store_test_results:
+      #     path: test-reports/
       - run:
           name: Run Coverage
           command: |
