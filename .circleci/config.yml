@@ -7,7 +7,7 @@ jobs:
       # version
       - image: circleci/python:3.6.1
         environment: # environment variables for primary container
-          TEST_DB_URL: postgresql://root:soc@database:5432/test-db
+          TEST_DB_URL: postgresql://root:soc@localhost:5432/test-db
           FLASK_APP: manage.py
           APP_SETTINGS: testing
       
