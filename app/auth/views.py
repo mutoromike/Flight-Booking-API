@@ -2,12 +2,11 @@
 
 from . import authenticate
 
-from flask_bcrypt import Bcrypt
 from flask.views import MethodView
 from flask import make_response, request, jsonify, g
 
 from app.models.models import User, BlacklistToken
-from app.helpers.auth import authorize, register_details, with_connection
+from app.helpers.auth import register_details, with_connection
 
 
 class RegisterUser(MethodView):
@@ -45,7 +44,7 @@ class RegisterUser(MethodView):
                 is_admin=False)
         user.save()
         response = {'message': 'You registered successfully. Please log in.'}
-        # return a response notifying the user that they registered successfully 
+        # return a response notifying the user that they registered successfully
         return make_response(jsonify(response)), 201
 
 

@@ -2,7 +2,7 @@ import os
 import re
 import psycopg2
 from functools import wraps
-from flask import Flask, request, jsonify, make_response
+from flask import request, jsonify, make_response
 from app.models.models import User, BlacklistToken
 
 def authorize(f):
@@ -38,7 +38,7 @@ def register_details(data):
         to validate user inputs
     """
     if not re.match("^[a-zA-Z0-9_]*$", data['username']):
-        # Check username special characters  
+        # Check username special characters
         return 'Username cannot have special characters!'
     if len(data['username'].strip())<5:
         # Checkusername length

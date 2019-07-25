@@ -1,9 +1,8 @@
 import os
 from threading import Thread
 
-from flask import render_template, jsonify, make_response
+from flask import render_template
 from flask_mail import Message, Mail
-from app.models.models import User, Bookings, Flights
 
 
 mail = Mail()

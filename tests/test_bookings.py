@@ -13,7 +13,7 @@ class BookingsTestCase(BaseTestCase):
 
     def test_successful_reservation(self):
         """
-        Test successful booking 
+        Test successful booking
         """
         access_token = self.get_admin_token() 
 
@@ -54,15 +54,14 @@ class BookingsTestCase(BaseTestCase):
         Test unsuccessful booking
         """
         access_token = self.get_admin_token() 
-        
-        """Book Flight"""
+
         result1 = self.client().post('/api/v1/booking', headers=dict(Authorization=access_token),
         data=json.dumps(self.booking), content_type='application/json' )
         self.assertEqual(result1.status_code, 400)
 
     def test_get_day_bookings(self):
         """
-        Test get all bookings on a specific day 
+        Test get all bookings on a specific day
         """
         access_token = self.get_admin_token() 
 
@@ -168,7 +167,7 @@ class BookingsTestCase(BaseTestCase):
         """
         Test unsuccessful status check
         """
-        access_token = self.get_admin_token() 
+        access_token = self.get_admin_token()
 
         result = self.client().post('/api/v1/flights', headers=dict(Authorization=access_token),
         data=json.dumps(self.flight), content_type='application/json' )
@@ -188,7 +187,7 @@ class BookingsTestCase(BaseTestCase):
         access_token = self.get_admin_token()
         new_access_token = self.get_token
 
-        result = self.client().post('/api/v1/flights', headers=dict(Authorization=access_token),
+        self.client().post('/api/v1/flights', headers=dict(Authorization=access_token),
         data=json.dumps(self.flight), content_type='application/json' )
 
         result1 = self.client().post('/api/v1/booking', headers=dict(Authorization=access_token),

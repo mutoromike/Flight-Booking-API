@@ -14,9 +14,9 @@ class FlightsTestCase(BaseTestCase):
 
     def test_flight_creation(self):
         """
-        Test if API can create a flight (POST request) 
+        Test if API can create a flight (POST request)
         """
-        access_token = self.get_admin_token() 
+        access_token = self.get_admin_token()
 
         result = self.client().post('/api/v1/flights', headers=dict(Authorization=access_token),
         data=json.dumps(self.flight), content_type='application/json' )

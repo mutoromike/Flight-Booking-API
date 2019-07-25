@@ -1,11 +1,10 @@
-""" app/events/views.py """
+""" app/flights/views.py """
 
-from functools import wraps
-from flask import Flask, request, jsonify, abort, make_response, g
+from flask import Flask, request, jsonify, abort, make_response
 from flask.views import MethodView
 
 from . import flight_blueprint
-from app.models.models import Flights, User
+from app.models.models import Flights
 from app.helpers.flight import validate_data
 from app.helpers.auth import authorize, check_user_role, with_connection
 
@@ -20,7 +19,7 @@ class FlightsView(MethodView):
     @authorize
     @check_user_role
     def post(self, user_id, current_user, conn):
-        """ 
+        """
             Method to create flight.
         """
 
@@ -46,7 +45,7 @@ class FlightsView(MethodView):
             'destination' : created_flight.destination, 'date' : created_flight.date,
             'time' : created_flight.time, 'created_by' : created_flight.created_by,
             'message': 'Flight successfully created'
-        })                           
+        })                    
         return make_response(response), 201
     
     @authorize
@@ -142,7 +141,6 @@ class GetFlights(MethodView):
             }
             results.append(obj)
         return make_response(jsonify(results)), 200
-            
 flights_view = FlightsView.as_view('flights')
 update_flight_view = AdminFlightView.as_view('update_flight')
 all_flights_view = GetFlights.as_view('all_flights')

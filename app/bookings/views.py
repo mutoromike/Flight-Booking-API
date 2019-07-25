@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, make_response
+from flask import request, jsonify, make_response
 from flask.views import MethodView
 import datetime
 
@@ -7,8 +7,6 @@ from app.models.models import Flights, User, Bookings
 from app.helpers.tickets import validate_ticket
 from app.helpers.auth import authorize, check_user_role, with_connection
 from app.helpers.emails import send_approve
-
-import re
 
 
 class BookingsView(MethodView):
@@ -33,7 +31,7 @@ class BookingsView(MethodView):
         existing = Flights.query.filter_by(id=flight_id).first()
         if not existing:
             response = {"message" : "The flight you wish to book doesn't exist"}
-            return make_response(jsonify(response)), 400 
+            return make_response(jsonify(response)), 400
         ticket_type = ticket_type.lower()
         date = datetime.date.today()
         new_booking = Bookings(

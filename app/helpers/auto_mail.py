@@ -1,12 +1,10 @@
-import os
 import atexit
 import logging
 from datetime import datetime, timedelta
 
-from flask import render_template, jsonify, make_response
+from flask import render_template
 from flask_mail import Message, Mail
 from app.models.models import Bookings, User, Flights
-import os
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
@@ -41,7 +39,7 @@ def generate_message():
                 date=booking.booking_date,
                 time=flight.time
             )
-            
+
             message_list.append(msg)
         else:
             pass

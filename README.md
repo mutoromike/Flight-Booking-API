@@ -4,16 +4,16 @@
 
 This is an API that powers a FLIGHT BOOKING APPLICATION. It allows clients to book tickets and track their flight details. The system also reminds the clients about their flights with a 24 hour notice. 
 
-## The applicaton enables the user to:
+## The applicaton enables the user to
 
- - Sign-Up
- - Log in
- - Upload passport photographs (changing and deleting also supported)
- - View available flights
- - Book tickets/reservations
- - Receive tickets as an email
- - Check the status of their flight
- - Remind clients about their flights (24 hr notice)
+-   Sign-Up
+-   Log in
+-   Upload passport photographs (changing and deleting also supported)
+-   View available flights
+-   Book tickets/reservations
+-   Receive tickets as an email
+-   Check the status of their flight
+-   Remind clients about their flights (24 hr notice)
 
 ## Tech/Framework used
 
@@ -45,5 +45,3 @@ Flask (Python)
     - Register to create an account
     - Login using username and password created
     - After signing in you can proceed to book a upload a passport photo, then you can book and track flights
-
-

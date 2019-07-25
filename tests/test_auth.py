@@ -126,7 +126,7 @@ class AuthTestCase(BaseTestCase):
 
     def test_user_login(self):
         """Test registered user can login."""
-        
+
         res = self.register_user(self.user_data)
         self.assertEqual(res.status_code, 201)
         login_res = self.login_user(self.login_data)
@@ -182,12 +182,12 @@ class AuthTestCase(BaseTestCase):
     def test_repeat_logout(self):
         """Test if a user is prevented to logout twice"""
         # Get token
-        access_token = self.get_token()        
+        access_token = self.get_token()    
         # Logout user
         self.client().post('/api/v1/auth/logout', headers=dict(Authorization=access_token),
         content_type='application/json')
         res = self.client().post('/api/v1/auth/logout', headers=dict(Authorization=access_token),
-        content_type='application/json')     
+        content_type='application/json')  
         self.assertEqual(res.status_code, 401)
         result = json.loads(res.data.decode())
         self.assertIn('You have been logged out already!', result['message'])

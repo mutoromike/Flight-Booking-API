@@ -6,7 +6,7 @@ def validate_data(flight):
         return "Flight details cannot be empty!"
 
     elif not re.match("^[a-zA-Z0-9_ ]*$", flight['name'].strip()):
-        return "Flight name cannot have special characters!"    
+        return "Flight name cannot have special characters!"
 
     else:
         return flight

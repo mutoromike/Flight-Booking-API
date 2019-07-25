@@ -1,17 +1,14 @@
 """ app/events/views.py """
 
-from functools import wraps
-from flask import Flask, request, jsonify, abort, make_response, g
+from flask import Flask, request, jsonify, abort, make_response
 from flask.views import MethodView
-from cloudinary.api import delete_resources_by_tag, resources_by_tag
 from cloudinary.uploader import upload, destroy
 from cloudinary.utils import cloudinary_url
 
 from . import image_blueprint
-from app.models.models import User, Images
+from app.models.models import Images
 from app.helpers.auth import authorize, with_connection
 
-import re
 
 
 class ProcessImages(MethodView):
@@ -78,7 +75,7 @@ class ProcessImages(MethodView):
         image.delete()
         response = {"message": "Passport successfully deleted"}
         return make_response(jsonify(response)), 200
-    
+
 
 images_view = ProcessImages.as_view('images')
 

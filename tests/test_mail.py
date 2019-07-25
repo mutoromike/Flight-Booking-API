@@ -1,5 +1,4 @@
-from flask_mail import Mail, Message, BadHeaderError, sanitize_address
-import json
+from flask_mail import Message, BadHeaderError, sanitize_address
 from email.header import Header
 
 from tests.base import BaseTestCase
