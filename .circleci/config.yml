@@ -7,14 +7,15 @@ jobs:
       # version
       - image: circleci/python:3.6.1
         environment: # environment variables for primary container
-          TEST_DB_URL: postgresql://root@localhost/flight_api?sslmode=disable
+          TEST_DB_URL: postgresql://soc:soc@database:5432/test-db
           FLASK_APP: manage.py
           APP_SETTINGS: testing
       
       - image: circleci/postgres:9.4
         environment:
-          POSTGRES_USER: root
-          POSTGRES_DB: flight_api
+          POSTGRES_USER: soc
+          POSTGRES_PASSWORD: soc
+          POSTGRES_DB: test_db
 
     working_directory: ~/Flight-Booking-API
 
