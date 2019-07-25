@@ -148,9 +148,10 @@ class BookingStatus(MethodView):
             }
             return make_response(jsonify(response)), 200
         else:
-            response = {"message": "There was an error processing your request"
+            response = {"message": "Your reservation for Flight " + f_name + \
+                " is not yet approved. You'll receive an email once it's done!"
             }
-            return make_response(jsonify(response)), 500
+            return make_response(jsonify(response)), 200
 
 
 booking_view = BookingsView.as_view('bookings')

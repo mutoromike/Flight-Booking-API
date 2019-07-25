@@ -23,6 +23,10 @@ class FlightsTestCase(BaseTestCase):
         self.assertEqual(result.status_code, 201)
         self.assertEqual(self.flight['name'], 'A596')
 
+        result1 = self.client().post('/api/v1/flights', headers=dict(Authorization=access_token),
+        data=json.dumps(self.flight), content_type='application/json' )
+        self.assertEqual(result1.status_code, 302)
+
     def test_empty_flight_fields(self):
         """
         Test empty flight fields.
@@ -82,6 +86,12 @@ class FlightsTestCase(BaseTestCase):
         # assert that the flight is actually returned given its ID
         self.assertEqual(result.status_code, 200)
         self.assertEqual(self.flight['name'], 'A596')
+
+        result1 = self.client().get(
+            '/api/v1/flight/{}'.format(23),
+            headers=dict(Authorization= access_token))
+        # assert that the error of the missing flight is returned
+        self.assertEqual(result1.status_code, 404)
 
     def test_flight_editing(self):
         """Test API can edit an existing flight. (PUT request)"""

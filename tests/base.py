@@ -58,6 +58,21 @@ class BaseTestCase(TestCase):
             "flight_id": 1,
             "ticket_type": ""
         }
+        self.bad_booking1 = {
+            "tickets": 1.3,
+            "flight_id": 1,
+            "ticket_type": "economy"
+        }
+        self.bad_booking2 = {
+            "tickets": 1,
+            "flight_id": 1.3,
+            "ticket_type": "economy"
+        }
+        self.bad_booking3 = {
+            "tickets": 30,
+            "flight_id": 1,
+            "ticket_type": "economy"
+        }
         date = datetime.date.today()
         self.date = {
             "date": str(date)
