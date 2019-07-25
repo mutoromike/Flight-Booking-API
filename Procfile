@@ -1,1 +1,1 @@
-web: gunicorn -b 0.0.0.0:8000 -w 1 manage:app
+web: gunicorn -w 1 manage:app
