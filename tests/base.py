@@ -47,6 +47,13 @@ class BaseTestCase(TestCase):
             'time': '5 PM'
         }
 
+        self.flight1 = {
+            'name': 'A596',
+            'origin': 'Nairobi',
+            'destination': 'Mongolia',
+            'date': '12/12/2018'
+        }
+
         self.booking = {
             "tickets": 1,
             "flight_id": 1,
