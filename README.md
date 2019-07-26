@@ -1,5 +1,8 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/4dc0116c2a1349b6893a48334030dc51)](https://app.codacy.com/app/mutoromike/Flight-Booking-API?utm_source=github.com&utm_medium=referral&utm_content=mutoromike/Flight-Booking-API&utm_campaign=Badge_Grade_Dashboard)  [![Coverage Status](https://coveralls.io/repos/github/mutoromike/Flight-Booking-API/badge.svg?branch=develop)](https://coveralls.io/github/mutoromike/Flight-Booking-API?branch=develop)  [![CircleCI](https://circleci.com/gh/mutoromike/Flight-Booking-API/tree/master.svg?style=svg)](https://circleci.com/gh/mutoromike/Flight-Booking-API/tree/master)
 
+## Documentation 
+-   The documentation link is https://flightapiflask.docs.apiary.io/
+
 # Flight-Booking-API
 
 This is an API that powers a FLIGHT BOOKING APPLICATION. It allows clients to book tickets and track their flight details. The system also reminds the clients about their flights with a 24 hour notice. 

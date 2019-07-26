@@ -14,10 +14,15 @@ mail = Mail()
 
 def get_bookings():
     date = str((datetime.now() + timedelta(days=1)).date())
-    bookings = Bookings.query.filter(Bookings.booking_date==date).all()
+    flights = Flights.query.filter(Flights.date==date).all()
+    bookings = []
+    for flight in flights:
+        booking = Bookings.query.filter_by(flight_id=flight.id).first()
+        bookings.append(booking)
     if not bookings:
         return False
     else:
+        print("the bookings are", bookings)
         return bookings
 
 
@@ -36,7 +41,7 @@ def generate_message():
                 username=user.username,
                 name=flight.name,
                 origin=flight.origin,
-                date=booking.booking_date,
+                date=flight.date,
                 time=flight.time
             )
 
@@ -71,7 +76,7 @@ def background_scheduler():
     scheduler.start()
     scheduler.add_job(
         func=send_email,
-        trigger=IntervalTrigger(start_date='2019-07-24 14:55:00', days=1),
+        trigger=IntervalTrigger(start_date='2019-07-26 12:52:00', days=1),
         id='job_to_remind_clients',
         name='BACKGROUND JOB SENDING EMAILS',
         replace_existing=True)
