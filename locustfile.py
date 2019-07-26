@@ -34,7 +34,7 @@ class UserBehavior(TaskSet):
         self.client.get(
             '/api/v1/flights/all')
 
-    @seq_task(1)
+    @task()
     def post_reservation(self):
         data = {
             "tickets": 3,
@@ -48,6 +48,6 @@ class UserBehavior(TaskSet):
 
 class ApiClient(HttpLocust):
     task_set = UserBehavior
-    host = "http://127.0.0.1:8000/"
+    host = "https://smart-flight-api.herokuapp.com"
     min_wait = 1000
     max_wait = 5000
