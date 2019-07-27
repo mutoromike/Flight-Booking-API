@@ -30,7 +30,7 @@ Flask (Python)
     - `python 3+ installed`
     - installed `virtual environment`
     - Clone the repo to your local machine
-    - Navigate to bright_events folder
+    - Navigate to Flight-Booking_API folder
     - Create a virtual environment and run the command: `pip install -r requirements.txt` (install packages)
 
 ### Start the application
