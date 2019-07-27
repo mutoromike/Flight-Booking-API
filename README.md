@@ -35,7 +35,7 @@ Flask (Python)
 
 ### Start the application
     - Run the following to start the app:
-`python manage.py run`
+`python run.py`
     - Navigate to postman to test the api endpoints
 
 ### Tests
