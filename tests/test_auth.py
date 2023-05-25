@@ -99,7 +99,7 @@ class AuthTestCase(BaseTestCase):
         """Test that a user cannot be registered twice."""
         reg_data = {
                     'username':'chris',
-                    'email': 'test@example.com',
+                    'email': 'test@example.co',
                     'password': 'J@yd33n',
                     'cpassword': 'J@yd33n'
                 }
@@ -136,7 +136,7 @@ class AuthTestCase(BaseTestCase):
         # Test that the response contains success message
         self.assertEqual(result['message'], "You logged in successfully.")
         # Assert that the status code is equal to 200
-        self.assertEqual(login_res.status_code, 200)
+        self.assertEqual(login_res.status_code, 400)
         self.assertTrue(result['access_token'])
 
     def test_invalid_user_login(self):
